@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>تأكيد الدفع</title>
+  <style>
+    * { box-sizing: border-box; }
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      font-family: 'Cairo', sans-serif;
+      overflow: hidden;
+      direction: rtl;
+    }
+
+    #bg-video {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      z-index: -1;
+    }
+
+    .container {
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .glass-box {
+      background: rgba(0, 0, 0, 0.6);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 20px;
+      padding: 30px 20px;
+      width: 90%;
+      max-width: 400px;
+      text-align: center;
+      color: white;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 0 20px rgba(0, 255, 195, 0.2);
+    }
+
+    h2 {
+      font-size: 22px;
+      margin-bottom: 20px;
+    }
+
+    input[type="file"] {
+      background: white;
+      color: black;
+      padding: 10px;
+      border-radius: 10px;
+      margin-bottom: 20px;
+      width: 100%;
+    }
+
+    button {
+      width: 100%;
+      padding: 12px;
+      border: none;
+      border-radius: 10px;
+      background-color: #00ffc3;
+      color: #000;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    #status {
+      margin-top: 15px;
+      font-size: 14px;
+      color: #ccc;
+    }
+  </style>
+</head>
+<body>
+
+<video autoplay muted loop id="bg-video">
+  <source src="background.mp4" type="video/mp4" />
+  متصفحك لا يدعم خلفية الفيديو.
+</video>
+
+<div class="container">
+  <div class="glass-box">
+    <h2>أرسل لقطة شاشة لعملية الدفع</h2>
+    <input type="file" id="screenshot" accept="image/*" />
+    <button onclick="sendToTelegram()">إرسال</button>
+    <div id="status"></div>
+  </div>
+</div>
+
+<script>
+  async function sendToTelegram() {
+    const fileInput = document.getElementById('screenshot');
+    const status = document.getElementById('status');
+
+    if (!fileInput.files.length) {
+      status.textContent = "يرجى اختيار صورة أولاً.";
+      return;
+    }
+
+    const file = fileInput.files[0];
+    const formData = new FormData();
+    formData.append('chat_id', '7739393558'); // Chat ID
+    formData.append('caption', '🔔 صورة تأكيد الدفع من الموقع');
+    formData.append('photo', file);
+
+    status.textContent = "جاري الإرسال...";
+
+    try {
+      await fetch("https://api.telegram.org/bot7742615412:AAHj2GkWsq3X3_JnhkDXF0Ke-PhIjJJTFnI/sendPhoto", {
+        method: "POST",
+        body: formData
+      });
+      status.textContent = "✅ تم الإرسال بنجاح.";
+    } catch (error) {
+      status.textContent = "❌ حدث خطأ أثناء الإرسال.";
+    }
+  }
+</script>
+
+</body>
+</html>
