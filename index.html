@@ -1,175 +1,33 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>تسجيل الدخول</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>الموقع متوقف حالياً</title>
   <style>
-    * { box-sizing: border-box; }
-    html, body {
-      margin: 0; padding: 0;
-      height: 100%; font-family: 'Cairo', sans-serif;
-      color: white; overflow: hidden;
-      direction: rtl;
-    }
     body {
-      display: flex; justify-content: center; align-items: center;
-      background: black; position: relative;
+      background-color: #111;
+      color: #fff;
+      font-family: 'Cairo', sans-serif;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
       height: 100vh;
-    }
-    #bgVideo {
-      position: fixed; top: 0; left: 0;
-      width: 100vw; height: 100vh;
-      object-fit: cover; z-index: -1;
-    }
-    .transparent-container {
-      background-color: transparent;
-      border: 1px solid rgba(255, 255, 255, 0.2);
-      border-radius: 20px;
-      padding: 30px 20px;
-      width: 100%; max-width: 380px;
+      margin: 0;
       text-align: center;
-      position: relative;
-      z-index: 10;
     }
-    h2 { margin-bottom: 20px; font-size: 24px; }
-    input {
-      width: 100%; padding: 12px;
-      margin: 10px 0 5px 0;
-      border: 1px solid rgba(255,255,255,0.3);
-      border-radius: 10px;
-      background-color: transparent;
-      color: #fff; font-size: 14px;
-      text-align: right;
+    h1 {
+      font-size: 2.5em;
+      margin-bottom: 0.5em;
     }
-    input::placeholder { color: #ccc; }
-    input.error {
-      border-color: red;
-      background-color: #330000;
-    }
-    .error-message {
-      color: #ff4c4c;
-      font-size: 12px;
-      margin: 0 0 10px 0;
-      text-align: right;
-      height: 14px;
-    }
-    .success-message {
-      color: #00ffc3;
-      font-size: 12px;
-      margin: 0 0 10px 0;
-      text-align: right;
-      height: 14px;
-    }
-    button {
-      width: 100%; padding: 12px;
-      margin-top: 10px;
-      background-color: #00ffc3;
-      border: none;
-      border-radius: 10px;
-      font-size: 16px;
-      cursor: pointer; color: #000;
-    }
-    button:hover { background-color: #00cfa0; }
-
-    .progress-bar {
-      width: 100%; height: 6px;
-      background: rgba(255,255,255,0.1);
-      border-radius: 10px;
-      overflow: hidden; margin-top: 20px;
-    }
-    .bar {
-      height: 100%;
-      width: 0%;
-      background: #00ffc3;
-      transition: width 2.5s linear;
-    }
-
-    footer {
-      position: fixed;
-      bottom: 10px;
-      width: 100%;
-      text-align: center;
-      color: rgba(255, 255, 255, 0.6);
-      font-size: 13px;
-      z-index: 10;
+    p {
+      font-size: 1.2em;
     }
   </style>
 </head>
 <body>
-
-  <video id="bgVideo" autoplay muted loop playsinline>
-    <source src="background.mp4" type="video/mp4" />
-  </video>
-
-  <div class="transparent-container" id="container">
-    <h2 id="title">تسجيل الدخول</h2>
-    <input type="email" id="email" placeholder="البريد الإلكتروني" />
-    <p class="error-message" id="emailError"></p>
-    <input type="password" id="password" placeholder="كلمة المرور" />
-    <button onclick="startLogin()" id="loginBtn">تسجيل الدخول</button>
-  </div>
-
-  <footer id="footer">© 2023 جميع الحقوق محفوظة</footer>
-
-  <script>
-    function validateEmail(email) {
-      return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-    }
-
-    function startLogin() {
-      const email = document.getElementById("email");
-      const error = document.getElementById("emailError");
-      if (!validateEmail(email.value.trim())) {
-        email.classList.add("error");
-        error.textContent = "الرجاء إدخال بريد إلكتروني صحيح";
-        return;
-      } else {
-        email.classList.remove("error");
-        error.textContent = "";
-      }
-
-      const container = document.getElementById("container");
-      container.innerHTML = `
-        <h2>جاري التحقق...</h2>
-        <div class="progress-bar"><div class="bar" id="bar"></div></div>
-      `;
-      setTimeout(() => {
-        document.getElementById("bar").style.width = "100%";
-      }, 100);
-
-      setTimeout(() => {
-        container.innerHTML = `
-          <h2>أدخل كود الاشتراك</h2>
-          <input type="text" placeholder="كود الاشتراك" id="subscriptionCode" />
-          <p class="error-message" id="codeError"></p>
-          <button onclick="submitCode()">تأكيد</button>
-          <button onclick="window.location.href='page2.html'">أحصل على الكود الآن</button>
-        `;
-      }, 2500);
-    }
-
-    function submitCode() {
-      const codeInput = document.getElementById("subscriptionCode");
-      const errorP = document.getElementById("codeError");
-      const code = codeInput.value.trim();
-
-      if (!code) {
-        errorP.style.color = "#ff4c4c";
-        errorP.textContent = "الرجاء إدخال الكود";
-        return;
-      }
-
-      if (code === "12829292934") {
-        errorP.style.color = "#00ffc3";
-        errorP.textContent = "تم قبول الكود!";
-        // يمكنك إضافة إعادة توجيه أو أي إجراء بعد قبول الكود هنا
-      } else {
-        errorP.style.color = "#ff4c4c";
-        errorP.textContent = "الرمز خاطئ";
-      }
-    }
-  </script>
-
+  <h1>عذراً، الموقع متوقف حالياً</h1>
+  <p>نقوم ببعض أعمال الصيانة. يرجى المحاولة لاحقاً.</p>
 </body>
 </html>
