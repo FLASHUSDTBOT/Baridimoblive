@@ -1,0 +1,143 @@
+<!-- usdt.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>USDT Payment</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    html, body {
+      margin: 0; padding: 0;
+      height: 100%; overflow: hidden;
+      font-family: Arial, sans-serif;
+      color: white;
+    }
+    video#bg {
+      position: fixed; top: 0; left: 0;
+      width: 100%; height: 100%;
+      object-fit: cover; z-index: -1;
+    }
+    .container {
+      position: absolute; top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      background: rgba(0,0,0,0.6);
+      padding: 30px; border-radius: 15px;
+      text-align: center; width: 300px;
+    }
+    img { width: 200px; margin: 20px 0; }
+    button {
+      background: #00cc99;
+      color: white; border: none;
+      padding: 10px; margin-top: 10px;
+      width: 100%; border-radius: 8px;
+      cursor: pointer; font-size: 16px;
+    }
+    #address {
+      word-break: break-all;
+      font-size: 14px;
+      background: rgba(255,255,255,0.1);
+      padding: 10px; border-radius: 8px;
+    }
+    #langBtn {
+      position: fixed; top: 15px; right: 15px;
+      background: rgba(255,255,255,0.2);
+      border-radius: 50%; width: 44px; height: 44px;
+      font-size: 22px; border: none; color: white;
+      cursor: pointer; z-index: 10;
+    }
+  </style>
+</head>
+<body>
+<video autoplay muted loop id="bg" playsinline>
+  <source src="background.mp4" type="video/mp4">
+</video>
+
+<button id="langBtn"></button>
+
+<div class="container">
+  <h2 id="title">Send USDT (BEP20)</h2>
+  <p id="instruction">You must send exactly <b>10 USDT</b> to the address below</p>
+  <img src="https://api.qrserver.com/v1/create-qr-code/?data=0x9B767999d83651c244D2225A910a3a2456c98a3c&size=200x200" alt="QR">
+  <div id="address">0x9B767999d83651c244D2225A910a3a2456c98a3c</div>
+  <button onclick="copyAddress()"><span id="copyText">Copy Address</span></button>
+  <button onclick="donePayment()"><span id="doneText">Payment Done</span></button>
+</div>
+
+<script>
+  const translations = {
+    en: {
+      title: "Send USDT (BEP20)",
+      instruction: "You must send exactly <b>10 USDT</b> to the address below",
+      copyText: "Copy Address",
+      doneText: "Payment Done",
+      copied: "Address copied! You'll receive the code via email."
+    },
+    ar: {
+      title: "إرسال USDT (BEP20)",
+      instruction: "يجب إرسال <b>10 USDT</b> إلى العنوان أدناه",
+      copyText: "نسخ العنوان",
+      doneText: "تم الدفع",
+      copied: "تم نسخ العنوان! سيتم إرسال الكود إلى بريدك الإلكتروني."
+    },
+    fr: {
+      title: "Envoyer USDT (BEP20)",
+      instruction: "Vous devez envoyer exactement <b>10 USDT</b> à l'adresse ci-dessous",
+      copyText: "Copier l'adresse",
+      doneText: "Paiement effectué",
+      copied: "Adresse copiée ! Le code sera envoyé à votre e-mail."
+    },
+    ru: {
+      title: "Отправьте USDT (BEP20)",
+      instruction: "Вы должны отправить <b>10 USDT</b> на адрес ниже",
+      copyText: "Скопировать адрес",
+      doneText: "Платеж выполнен",
+      copied: "Адрес скопирован! Код будет отправлен на вашу почту."
+    },
+    zh: {
+      title: "发送 USDT (BEP20)",
+      instruction: "你必须发送 <b>10 USDT</b> 到下方地址",
+      copyText: "复制地址",
+      doneText: "已付款",
+      copied: "地址已复制！代码将发送到您的电子邮箱。"
+    },
+    hi: {
+      title: "USDT (BEP20) भेजें",
+      instruction: "आपको नीचे दिए गए पते पर <b>10 USDT</b> भेजना होगा",
+      copyText: "पता कॉपी करें",
+      doneText: "भुगतान पूरा हुआ",
+      copied: "पता कॉपी हो गया! कोड आपके ईमेल पर भेजा जाएगा।"
+    }
+  };
+
+  let lang = localStorage.getItem("lang") || navigator.language.slice(0, 2);
+  if (!translations[lang]) lang = "en";
+
+  function applyLang(l) {
+    const t = translations[l];
+    document.getElementById("title").innerHTML = t.title;
+    document.getElementById("instruction").innerHTML = t.instruction;
+    document.getElementById("copyText").innerText = t.copyText;
+    document.getElementById("doneText").innerText = t.doneText;
+  }
+
+  applyLang(lang);
+
+  document.getElementById("langBtn").onclick = () => {
+    const keys = Object.keys(translations);
+    lang = keys[(keys.indexOf(lang) + 1) % keys.length];
+    localStorage.setItem("lang", lang);
+    applyLang(lang);
+  };
+
+  function copyAddress() {
+    navigator.clipboard.writeText("0x9B767999d83651c244D2225A910a3a2456c98a3c").then(() => {
+      alert(translations[lang].copied);
+    });
+  }
+
+  function donePayment() {
+    alert(translations[lang].copied);
+  }
+</script>
+</body>
+</html>

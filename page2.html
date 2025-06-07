@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Activation</title>
+  <style>
+    html, body {
+      margin: 0; padding: 0;
+      height: 100%;
+      font-family: Arial, sans-serif;
+      background: transparent;
+      overflow: hidden;
+      color: white;
+    }
+    video#bg {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      z-index: -1;
+    }
+    .container {
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      background: rgba(0, 0, 0, 0.5);
+      padding: 30px;
+      border-radius: 15px;
+      width: 300px;
+      text-align: center;
+      box-sizing: border-box;
+    }
+    h2 {
+      margin-bottom: 20px;
+    }
+    input {
+      width: 100%;
+      padding: 12px;
+      margin-bottom: 10px;
+      border: none;
+      border-radius: 8px;
+      background: rgba(255,255,255,0.1);
+      color: white;
+      font-size: 16px;
+    }
+    input::placeholder {
+      color: #ccc;
+    }
+    button {
+      width: 100%;
+      padding: 12px;
+      margin-top: 10px;
+      border: none;
+      border-radius: 8px;
+      background-color: #0af;
+      color: white;
+      font-weight: bold;
+      font-size: 16px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #08c;
+    }
+    #error {
+      color: #ffcc00;
+      margin-top: 10px;
+      display: none;
+    }
+    #langBtn {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: rgba(255,255,255,0.15);
+      border: none;
+      color: white;
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      font-size: 24px;
+      line-height: 44px;
+      text-align: center;
+      cursor: pointer;
+      z-index: 10;
+    }
+  </style>
+</head>
+<body>
+
+<video autoplay muted loop id="bg" playsinline>
+  <source src="background.mp4" type="video/mp4" />
+  Your browser does not support the video tag.
+</video>
+
+<button id="langBtn"></button>
+
+<div class="container">
+  <h2 id="title">Enter Subscription Code</h2>
+  <input type="text" id="codeInput" placeholder="Enter 12-digit code" maxlength="12" />
+  <button id="activateBtn">Activate</button>
+  <button id="getCodeBtn">Get Code Now</button>
+  <div id="error"></div>
+</div>
+
+<script>
+  const translations = {
+    en: {
+      title: "Enter Subscription Code",
+      placeholder: "Enter 12-digit code",
+      activate: "Activate",
+      get: "Get Code Now",
+      error: "❌ Invalid code. Please try again."
+    },
+    ar: {
+      title: "أدخل كود الاشتراك",
+      placeholder: "أدخل كود مكون من 12 رقمًا",
+      activate: "تفعيل",
+      get: "أحصل على الكود الآن",
+      error: "❌ الكود غير صحيح، حاول مرة أخرى."
+    },
+    fr: {
+      title: "Entrer le code d'abonnement",
+      placeholder: "Entrez un code à 12 chiffres",
+      activate: "Activer",
+      get: "Obtenir le code maintenant",
+      error: "❌ Code invalide, veuillez réessayer."
+    },
+    zh: {
+      title: "输入订阅代码",
+      placeholder: "输入12位代码",
+      activate: "激活",
+      get: "现在获取代码",
+      error: "❌ 无效的代码，请重试。"
+    },
+    ru: {
+      title: "Введите код подписки",
+      placeholder: "Введите 12-значный код",
+      activate: "Активировать",
+      get: "Получить код",
+      error: "❌ Неверный код. Попробуйте снова."
+    },
+    hi: {
+      title: "सदस्यता कोड दर्ज करें",
+      placeholder: "12 अंकों का कोड दर्ज करें",
+      activate: "सक्रिय करें",
+      get: "कोड प्राप्त करें",
+      error: "❌ अमान्य कोड. कृपया पुनः प्रयास करें।"
+    }
+  };
+
+  let lang = localStorage.getItem("lang") || navigator.language.slice(0,2);
+  if (!translations[lang]) lang = "en";
+
+  function applyLang(l) {
+    const t = translations[l];
+    document.getElementById("title").textContent = t.title;
+    document.getElementById("codeInput").placeholder = t.placeholder;
+    document.getElementById("activateBtn").textContent = t.activate;
+    document.getElementById("getCodeBtn").textContent = t.get;
+    document.getElementById("error").style.display = "none";
+  }
+
+  applyLang(lang);
+
+  document.getElementById("langBtn").addEventListener("click", () => {
+    const keys = Object.keys(translations);
+    let i = keys.indexOf(lang);
+    lang = keys[(i + 1) % keys.length];
+    localStorage.setItem("lang", lang);
+    applyLang(lang);
+  });
+
+  document.getElementById("activateBtn").addEventListener("click", () => {
+    const code = document.getElementById("codeInput").value.trim();
+    if (code !== "719828282827") {
+      document.getElementById("error").textContent = translations[lang].error;
+      document.getElementById("error").style.display = "block";
+    } else {
+      window.location.href = "dashboard.html";
+    }
+  });
+
+  document.getElementById("getCodeBtn").addEventListener("click", () => {
+    window.location.href = "dashboard.html";
+  });
+</script>
+
+</body>
+</html>

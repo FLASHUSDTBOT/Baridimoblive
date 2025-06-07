@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Send SOL</title>
+  <style>
+    html, body {
+      margin: 0; padding: 0; height: 100%; overflow: hidden;
+      font-family: Arial, sans-serif;
+      background: transparent;
+      color: white;
+    }
+    video#bg {
+      position: fixed;
+      top:0; left:0;
+      width: 100%; height: 100%;
+      object-fit: cover;
+      z-index: -1;
+    }
+    .container {
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      background: rgba(0,0,0,0.6);
+      padding: 30px;
+      border-radius: 15px;
+      width: 320px;
+      text-align: center;
+    }
+    h2 {
+      margin-bottom: 15px;
+    }
+    #address {
+      background: rgba(255,255,255,0.1);
+      padding: 12px;
+      border-radius: 8px;
+      user-select: all;
+      font-family: monospace;
+      margin-bottom: 10px;
+      word-break: break-word;
+    }
+    button {
+      width: 100%;
+      padding: 12px;
+      border: none;
+      border-radius: 8px;
+      background-color: #9147ff;
+      color: white;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+    #progressBar {
+      width: 100%;
+      height: 8px;
+      background: rgba(255,255,255,0.2);
+      margin-top: 15px;
+      border-radius: 4px;
+      overflow: hidden;
+      display: none;
+    }
+    #progress {
+      height: 100%;
+      width: 0%;
+      background: #00ff99;
+    }
+    #amount {
+      font-weight: bold;
+      margin-bottom: 15px;
+    }
+    #qrcode {
+      margin: 20px auto 10px;
+      width: 180px;
+      height: 180px;
+    }
+    #modalOverlay {
+      display: none;
+      position: fixed;
+      top:0; left:0;
+      width: 100vw; height: 100vh;
+      background: rgba(0,0,0,0.7);
+      z-index: 1000;
+      justify-content: center;
+      align-items: center;
+    }
+    #modalBox {
+      background: #222;
+      padding: 25px 30px;
+      border-radius: 12px;
+      max-width: 90%;
+      text-align: center;
+      color: #fff;
+      font-size: 18px;
+      box-shadow: 0 0 10px #00ff99;
+    }
+    #modalBox button {
+      margin-top: 20px;
+      background: #00ff99;
+      color: black;
+      font-weight: bold;
+      font-size: 16px;
+    }
+    #langBtn {
+      position: fixed;
+      top: 15px;
+      right: 15px;
+      background: rgba(0,0,0,0.6);
+      border-radius: 50%;
+      padding: 10px;
+      cursor: pointer;
+      font-size: 20px;
+      z-index: 999;
+    }
+  </style>
+</head>
+<body>
+
+<video autoplay muted loop id="bg" playsinline>
+  <source src="background.mp4" type="video/mp4" />
+</video>
+
+<div id="langBtn"></div>
+
+<div class="container">
+  <h2 id="title">Send SOL (Solana)</h2>
+  <div id="amount">You must send <strong>0.07 SOL</strong></div>
+  <div id="address" title="Click to copy">4JAFP2sYg6GWKfziWR8Y8bxz3RwYDBgE6BVzX9KZkqSg</div>
+  <div id="qrcode"></div>
+  <button id="copyBtn">Copy Address</button>
+  <button id="paidBtn">Payment Done</button>
+  <div id="progressBar"><div id="progress"></div></div>
+</div>
+
+<div id="modalOverlay">
+  <div id="modalBox">
+    <p id="copiedMsg">Address copied! After payment, the code will be sent to your email address.</p>
+    <button id="closeModalBtn">Close</button>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script>
+  const address = "4JAFP2sYg6GWKfziWR8Y8bxz3RwYDBgE6BVzX9KZkqSg";
+
+  new QRCode(document.getElementById("qrcode"), {
+    text: address,
+    width: 180,
+    height: 180,
+    colorDark: "#ffffff",
+    colorLight: "transparent",
+    correctLevel: QRCode.CorrectLevel.H
+  });
+
+  document.getElementById("address").onclick = () => {
+    navigator.clipboard.writeText(address).then(() => alert(t("copied")));
+  };
+
+  document.getElementById("copyBtn").onclick = () => {
+    navigator.clipboard.writeText(address).then(() => alert(t("copied")));
+  };
+
+  const paidBtn = document.getElementById("paidBtn");
+  const progressBar = document.getElementById("progressBar");
+  const progress = document.getElementById("progress");
+  const modalOverlay = document.getElementById("modalOverlay");
+  const closeModalBtn = document.getElementById("closeModalBtn");
+
+  paidBtn.onclick = () => {
+    paidBtn.disabled = true;
+    progressBar.style.display = "block";
+    let width = 0;
+    const interval = setInterval(() => {
+      width += 100 / 60;
+      progress.style.width = width + "%";
+      if (width >= 100) {
+        clearInterval(interval);
+        progressBar.style.display = "none";
+        modalOverlay.style.display = "flex";
+      }
+    }, 100);
+  };
+
+  closeModalBtn.onclick = () => {
+    modalOverlay.style.display = "none";
+    paidBtn.disabled = false;
+    progress.style.width = "0%";
+  };
+
+  // 🌐 Translations
+  const translations = {
+    en: {
+      title: "Send SOL (Solana)",
+      amount: "You must send <strong>0.07 SOL</strong>",
+      copy: "Copy Address",
+      done: "Payment Done",
+      copied: "Address copied!",
+      modal: "Address copied! After payment, the code will be sent to your email address.",
+      close: "Close"
+    },
+    ar: {
+      title: "أرسل SOL (شبكة سولانا)",
+      amount: "يجب إرسال <strong>0.07 SOL</strong>",
+      copy: "نسخ العنوان",
+      done: "تم الدفع",
+      copied: "تم نسخ العنوان!",
+      modal: "تم النسخ! بعد الدفع سيصلك الكود إلى عنوان الإيميل الخاص بك.",
+      close: "إغلاق"
+    },
+    fr: {
+      title: "Envoyer du SOL (Solana)",
+      amount: "Vous devez envoyer <strong>0.07 SOL</strong>",
+      copy: "Copier l'adresse",
+      done: "Paiement effectué",
+      copied: "Adresse copiée !",
+      modal: "Adresse copiée ! Après le paiement, le code sera envoyé à votre adresse email.",
+      close: "Fermer"
+    },
+    ru: {
+      title: "Отправьте SOL (Solana)",
+      amount: "Вы должны отправить <strong>0.07 SOL</strong>",
+      copy: "Копировать адрес",
+      done: "Платёж выполнен",
+      copied: "Адрес скопирован!",
+      modal: "Адрес скопирован! После оплаты код будет отправлен на ваш email.",
+      close: "Закрыть"
+    },
+    zh: {
+      title: "发送 SOL (Solana)",
+      amount: "您必须发送 <strong>0.07 SOL</strong>",
+      copy: "复制地址",
+      done: "已付款",
+      copied: "地址已复制！",
+      modal: "地址已复制！付款后，验证码将发送到您的邮箱。",
+      close: "关闭"
+    }
+  };
+
+  const langBtn = document.getElementById("langBtn");
+  let currentLang = localStorage.getItem("lang") || navigator.language.slice(0,2);
+  if (!translations[currentLang]) currentLang = "en";
+
+  function t(key) {
+    return translations[currentLang][key] || key;
+  }
+
+  function updateLang() {
+    document.getElementById("title").innerHTML = t("title");
+    document.getElementById("amount").innerHTML = t("amount");
+    document.getElementById("copyBtn").innerText = t("copy");
+    document.getElementById("paidBtn").innerText = t("done");
+    document.getElementById("copiedMsg").innerText = t("modal");
+    document.getElementById("closeModalBtn").innerText = t("close");
+  }
+
+  langBtn.onclick = () => {
+    const langs = Object.keys(translations);
+    let i = langs.indexOf(currentLang);
+    currentLang = langs[(i + 1) % langs.length];
+    localStorage.setItem("lang", currentLang);
+    updateLang();
+  };
+
+  updateLang();
+</script>
+
+</body>
+</html>
